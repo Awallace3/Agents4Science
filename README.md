@@ -7,7 +7,7 @@ This project provides three example agents for a workshop on using AI in science
 To use an agent, you will invoke the `gemini-cli` with the `-C` flag to specify the agent's directory, followed by your prompt.
 
 ```bash
-gemini-cli -C <agent_directory> "Your prompt here"
+gemini
 ```
 
 Before running the plotting agent, make sure to install the required dependencies:
@@ -24,7 +24,8 @@ This agent creates plots from data in CSV or PKL files.
 
 **Command:**
 ```bash
-gemini-cli -C scientific_plotting_agent "Plot the data in 'data.csv' with the first column as the x-axis and the second as the y-axis."
+gemini 
+"scientific_plotting_agent: Plot the data in 'data.csv' with the first column as the x-axis and the second as the y-axis."
 ```
 
 ### 2. Equation Implementation Agent
@@ -33,7 +34,7 @@ This agent reads a scientific paper in PDF format and translates the equations i
 
 **Command:**
 ```bash
-gemini-cli -C equation_implementation_agent "Read 'paper.pdf' and write a Python function for the main equation."
+gemini
 ```
 
 ### 3. Quantum Chemistry Agent
@@ -42,5 +43,5 @@ This agent simulates connecting to a server to run quantum chemistry calculation
 
 **Command:**
 ```bash
-gemini-cli -C quantum_chemistry_agent "Estimate the compute time for a DFT calculation on a benzene molecule."
+gemini
 ```
