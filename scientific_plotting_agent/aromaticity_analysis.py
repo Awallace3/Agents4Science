@@ -3,6 +3,7 @@ import qcelemental as qcel
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import rdDetermineBonds
+from rdkit.Chem import Descriptors
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -10,37 +11,52 @@ import tempfile
 import os
 import argparse
 
-def get_smiles_and_aromaticity(mol_obj):
-    """Converts a qcelemental Molecule object to a SMILES string and checks for aromaticity."""
-    try:
-        tmp_path = 'temp.xyz'
-        mol_obj.to_file(tmp_path)
-        charge = int(mol_obj.molecular_charge)
-        mol = Chem.MolFromXYZFile(tmp_path)
-        rdDetermineBonds.DetermineConnectivity(mol, charge=charge)
-        # os.remove(tmp_path)
+def get_cheminformatics_properties(mol_obj):
+    """
+    Converts a qcelemental Molecule object to an RDKit molecule,
+    and calculates a set of cheminformatics properties.
+    """
+    properties = {
+        'smiles': 'N/A',
+        'is_aromatic': False,
+        'mol_weight': 0,
+        'num_rings': 0,
+        'num_rotatable_bonds': 0,
+        'logp': 0,
+        'tpsa': 0,
+    }
+    tmp_path = 'temp.xyz'
+    mol_obj.to_file(tmp_path)
+    charge = int(mol_obj.molecular_charge)
+    mol = Chem.MolFromXYZFile(tmp_path)
+    rdDetermineBonds.DetermineConnectivity(mol, charge=charge)
+    os.remove(tmp_path)
 
-        if mol is None:
-            return "N/A", False
+    if mol is None:
+        return properties
 
-        smiles = Chem.MolToSmiles(mol)
-        is_aromatic = False
-        if mol.GetNumBonds() > 0:
-            for bond in mol.GetBonds():
-                if bond.GetIsAromatic():
-                    is_aromatic = True
-                    break
-        if not is_aromatic:
-            for atom in mol.GetAtoms():
-                if atom.GetIsAromatic():
-                    is_aromatic = True
-                    break
+    properties['smiles'] = Chem.MolToSmiles(mol)
+    
+    is_aromatic = False
+    if mol.GetNumBonds() > 0:
+        for bond in mol.GetBonds():
+            if bond.GetIsAromatic():
+                is_aromatic = True
+                break
+    if not is_aromatic:
+        for atom in mol.GetAtoms():
+            if atom.GetIsAromatic():
+                is_aromatic = True
+                break
+    properties['is_aromatic'] = is_aromatic
+    
+    properties['mol_weight'] = Descriptors.MolWt(mol)
+    properties['num_rings'] = Descriptors.RingCount(mol)
+    properties['num_rotatable_bonds'] = Descriptors.NumRotatableBonds(mol)
+    properties['logp'] = Descriptors.MolLogP(mol)
+    properties['tpsa'] = Descriptors.TPSA(mol)
 
-    except Exception as e:
-        print(f"Error processing molecule: {e}")
-        return "Error", False
-            
-    return smiles, is_aromatic
+    return properties
 
 def main(input_file, output_file):
     df = pd.read_pickle(input_file)
@@ -65,46 +81,42 @@ def main(input_file, output_file):
         mon_a = dimer.get_fragment(0)
         mon_b = dimer.get_fragment(1)
 
-        # Get SMILES and aromaticity
-        smiles_a, is_aromatic_a = get_smiles_and_aromaticity(mon_a)
-        smiles_b, is_aromatic_b = get_smiles_and_aromaticity(mon_b)
+        # Get cheminformatics properties
+        props_a = get_cheminformatics_properties(mon_a)
+        props_b = get_cheminformatics_properties(mon_b)
 
         results.append({
             'error': row['error'],
-            'smiles_a': smiles_a,
-            'is_aromatic_a': is_aromatic_a,
-            'smiles_b': smiles_b,
-            'is_aromatic_b': is_aromatic_b,
+            'smiles_a': props_a['smiles'],
+            'is_aromatic_a': props_a['is_aromatic'],
+            'mol_weight_a': props_a['mol_weight'],
+            'num_rings_a': props_a['num_rings'],
+            'num_rotatable_bonds_a': props_a['num_rotatable_bonds'],
+            'logp_a': props_a['logp'],
+            'tpsa_a': props_a['tpsa'],
+            'smiles_b': props_b['smiles'],
+            'is_aromatic_b': props_b['is_aromatic'],
+            'mol_weight_b': props_b['mol_weight'],
+            'num_rings_b': props_b['num_rings'],
+            'num_rotatable_bonds_b': props_b['num_rotatable_bonds'],
+            'logp_b': props_b['logp'],
+            'tpsa_b': props_b['tpsa'],
         })
 
     results_df = pd.DataFrame(results)
     results_df['contains_aromatic'] = results_df['is_aromatic_a'] | results_df['is_aromatic_b']
     
     print(results_df.head())
-    print(results_df['contains_aromatic'].value_counts())
 
     # Visualize the results
-    plt.figure(figsize=(10, 7))
-    ax = sns.violinplot(x='contains_aromatic', y='error', data=results_df)
-    ax.set_xticklabels(['Non-Aromatic', 'Aromatic'])
-    plt.xlabel('System Type')
-    plt.ylabel('Error (kcal/mol)')
-    plt.title('Error Distribution for Aromatic vs. Non-Aromatic Systems')
-    
-    # Annotate with counts
-    n_aromatic = results_df['contains_aromatic'].sum()
-    n_non_aromatic = len(results_df) - n_aromatic
-    ax.text(0, ax.get_ylim()[1]*0.9, f'n = {n_non_aromatic}', ha='center')
-    if n_aromatic > 0:
-        ax.text(1, ax.get_ylim()[1]*0.9, f'n = {n_aromatic}', ha='center')
-    
-    plt.tight_layout()
+    pair_plot_vars = ['error', 'mol_weight_a', 'mol_weight_b', 'logp_a', 'logp_b', 'tpsa_a', 'tpsa_b']
+    sns.pairplot(results_df, vars=pair_plot_vars, hue='contains_aromatic', diag_kind='kde')
     plt.savefig(output_file)
     print(f"Plot saved to {output_file}")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Analyze SAPT errors for aromatic vs. non-aromatic systems.')
+    parser = argparse.ArgumentParser(description='Analyze SAPT errors and cheminformatics properties.')
     parser.add_argument('--input_file', type=str, default='combined_df_4569.pkl', help='Path to the input pickle file.')
-    parser.add_argument('--output_file', type=str, default='aromaticity_plot.png', help='Path to save the output plot.')
+    parser.add_argument('--output_file', type=str, default='cheminformatics_analysis.png', help='Path to save the output plot.')
     args = parser.parse_args()
     main(args.input_file, args.output_file)
