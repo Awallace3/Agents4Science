@@ -1,4 +1,4 @@
-# AI4Science Workshop: Gemini-CLI Agents
+# AI4Science Workshop: Opencode/Gemini-CLI
 
 This project provides three example agents for a workshop on using AI in science. Each agent is designed to be used with the `gemini-cli` tool.
 
