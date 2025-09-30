@@ -1,0 +1,35 @@
+name: p4_qcml
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - pandas
+  - pip
+  - psycopg2
+  - postgresql
+  - pytest
+  - python
+  - psi4
+  - pytorch-cpu>=2.7.0
+  - jupyter
+  - requests
+  - setuptools
+  - torchaudio
+  - torchvision
+  - pytorch_geometric
+  - pytorch_scatter=*=cpu*
+  - pytorch-minimize
+  - matplotlib
+  - pydantic
+  - scipy
+  - tqdm
+  - qcengine
+  - qcfractal>=0.59
+  - qcfractalcompute>=0.59
+  - qcmanybody
+  - fastmcp
+  - pip:
+      - qm-tools-aw==1.5.0
+      - qcmlforge==0.0.11
+      - cdsg-tools==0.0.2
