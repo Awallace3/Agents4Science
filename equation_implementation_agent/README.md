@@ -54,7 +54,7 @@ ref_elst=-6.824148 kcal/mol # total electrostatics energy without damping functi
 Now that we have a working electrostatics implementation, we will be able to direct the model to use the following damping functions to get the electrostatics energy closer to the one implemented in the paper.
 
 ```txt
-Here are damping functions with their partial derivatives for you to use. Copy the electrostatics equation and add another function for damped electrostatics. Use the alpha_A and alpha_B values for the damping parameters alpha_i and alpha_j in the pytest for water dimer.
+Here are damping functions with their partial derivatives for you to use. Copy the electrostatics equation and add another function for damped electrostatics. Use the alpha_A and alpha_B values for the damping parameters alpha_i and alpha_j in the pytest for water dimer. The numerical agreement for this test can be 1e-2.
 """
 # Damped total
 elst_charges_dipoles_damped = -10.532698 kcal/mol
