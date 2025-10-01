@@ -1,12 +1,14 @@
 # Prompts
 ```txt
 # Task
-implement the electrostatics equation from @schriber_2021_184110.pdf. Implement the equation using numpy and qcelemental. Use a test driven development approach to implement the correct code to match an electrostatics energy for the given system below of -10.532698 kcal/mol.
+implement the electrostatics equation from @schriber_2021_184110.pdf. Implement the equation using numpy and qcelemental. Use a test driven development approach to implement the correct code to match an electrostatics energy for the given system below of -6.824148 kcal/mol. When implementing each term, explicitly write a comment that matches the latex format of the equation in the paper to help with organization/debugging. Note all usage of qA should be qA_electronic = qA - ZA and qB_electronic = qB - ZB.
+
+# Output
+elst.py for implementing the code and a test_elst.py file for running a pytest. Execute pytest to test each term to know which terms are correct and which ones need corrected.
 
 # Information for pytest
-
 """
-elst_charges_dipoles = -10.532698 kcal/mol
+
 qcel_mol = qcel.models.Molecule.from_data(
 '''
 0 1
@@ -34,20 +36,45 @@ qB=array([-0.90516141,  0.45258175,  0.45257968])
 muB=array([[-0.14261352,  0.17416981, -0.00394689],
        [ 0.00157417, -0.00108209,  0.02947683],
        [ 0.00140431, -0.00255545, -0.029395  ]])
+
+
+
+# Undamped
 E_ZA_ZB = 12056.9380 kcal/mol # term1
 E_ZA_MB = -12206.0827 kcal/mol # term2
 E_ZB_MA = -11880.5922 kcal/mol # term3
 MTP_MTP = 12022.9127 kcal/mol # term4
 ref_elst=-6.824148 kcal/mol # total electrostatics energy without damping functions (f_1=1 and f_2=1)
+
+
 """
 ```
 
-Once stuck on the damping function implementation, provide the following code snippet:
+# Damping function implementation
+Now that we have a working electrostatics implementation, we will be able to direct the model to use the following damping functions to get the electrostatics energy closer to the one implemented in the paper.
+
 ```txt
-Here are damping functions with their partial derivatives for you to use. Also,
- get Z from the fragement atomic_numbers. qA with muA are considered M_A with respect to equation 4. Same for B. Once you have Z_A, qA[i] -= Z_A[i]. Don't forget to evaluate the Z_A*Z_B/r term
+Here are damping functions with their partial derivatives for you to use. Copy the electrostatics equation and add another function for damped electrostatics. Use the alpha_A and alpha_B values for the damping parameters alpha_i and alpha_j in the pytest for water dimer.
 """
-def elst_damping_mtp_mtp(alpha_i, alpha_j, r):
+# Damped total
+elst_charges_dipoles_damped = -10.532698 kcal/mol
+
+alphaA = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+alphaB = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+
+def elst_damping_z_mtp_f1(alpha_j, r):
+    """
+    # Z-MTP interaction from CLIFF
+    lam_1 is for Z-q, lam_3 is for Z-mu
+    """
+    # Z-MTP interaction from CLIFF
+    lam_1 = 1.0 - np.exp(-1.0 * np.multiply(alpha_j, r))
+    lam_3 = 1.0 - (1.0 + np.multiply(alpha_j, r)) * np.exp(
+        -1.0 * np.multiply(alpha_j, r)
+    )
+    return lam_1, lam_3
+
+def elst_damping_mtp_mtp_f2(alpha_i, alpha_j, r):
     """
     # MTP-MTP interaction from CLIFF
     lam_1 is for q-q, lam_3 is for q-mu, and lam_5 is for mu-mu
@@ -83,16 +110,5 @@ def elst_damping_mtp_mtp(alpha_i, alpha_j, r):
     return lam1, lam3, lam5
 
 
-def elst_damping_z_mtp(alpha_j, r):
-    """
-    # Z-MTP interaction from CLIFF
-    lam_1 is for Z-q, lam_3 is for Z-mu
-    """
-    # Z-MTP interaction from CLIFF
-    lam_1 = 1.0 - np.exp(-1.0 * np.multiply(alpha_j, r))
-    lam_3 = 1.0 - (1.0 + np.multiply(alpha_j, r)) * np.exp(
-        -1.0 * np.multiply(alpha_j, r)
-    )
-    return lam_1, lam_3
 """
 ```
