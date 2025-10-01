@@ -4,7 +4,7 @@
 implement the electrostatics equation from @schriber_2021_184110.pdf. Implement the equation using numpy and qcelemental. Use a test driven development approach to implement the correct code to match an electrostatics energy for the given system below of -6.824148 kcal/mol. When implementing each term, explicitly write a comment that matches the latex format of the equation in the paper to help with organization/debugging. Note all usage of qA should be qA_electronic = qA - ZA and qB_electronic = qB - ZB.
 
 # Output
-elst.py for implementing the code and a test_elst.py file for running a pytest. Execute pytest to test each term to know which terms are correct and which ones need corrected.
+electrostatics.py for implementing the code and a test_electrostatics.py file for running a pytest. Execute pytest to test each term to know which terms are correct and which ones need corrected.
 
 # Information for pytest
 """
@@ -110,3 +110,13 @@ def elst_damping_mtp_mtp_f2(alpha_i, alpha_j, r):
     return lam1, lam3, lam5
 """
 ```
+
+# Optimize code
+Okay that implementation works but... you would never use that in production. Can we use LLMs to make our code faster? Can it quantify that improvement?
+```txt
+Now using the damped electrostatics test, optimize the numpy code to be vectorized and more efficient but still get the correct results. Write a pytest for this optimized version and write
+a script that analyzes the function calls between the two functions over an average of 10 runs with results on a bar plot.
+```
+
+# Results
+This example shows how you could go from a simple equation from a paper (with reference values) to code through a test driven development approach. Now that you have reproduced results and optimized the code a little bit (much more would be needed in reality). Now try repeating this exercise with a different model through opencode, creating an adapted AGENTS.md file and other simplifications/improvements to the prompts above! With enough pointed direction, the models should give similar outputs; however, this is definitely not deterministic and results vary. Important metrics to think about are cost/speed/adherence to instructions/code performance metrics/accuracy/etc...

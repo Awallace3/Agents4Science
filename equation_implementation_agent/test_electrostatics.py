@@ -2,7 +2,7 @@ import numpy as np
 from numpy import array
 import qcelemental as qcel
 import pytest
-from electrostatics import calculate_electrostatics
+from electrostatics import calculate_electrostatics, calculate_damped_electrostatics, calculate_damped_electrostatics_vectorized
 
 @pytest.fixture
 def system_data():
@@ -63,3 +63,34 @@ def test_electrostatics_terms(system_data):
     assert np.isclose(E3, system_data["ref_E_ZB_MA"], atol=1e-4)
     assert np.isclose(E4, system_data["ref_MTP_MTP"], atol=1e-4)
     assert np.isclose(total_elst, system_data["ref_elst"], atol=1e-4)
+
+def test_damped_electrostatics(system_data):
+    """Tests the damped electrostatic calculation."""
+    alphaA = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+    alphaB = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+    ref_damped_elst = -10.532698
+
+    total_damped_elst, _, _, _, _ = calculate_damped_electrostatics(
+        system_data["qcel_mol"], system_data["qA"], system_data["muA"],
+        system_data["qB"], system_data["muB"], alphaA, alphaB
+    )
+
+    assert np.isclose(total_damped_elst, ref_damped_elst, atol=1e-2)
+
+def test_vectorized_vs_original(system_data):
+    """Tests that the vectorized and original damped functions give the same result."""
+    alphaA = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+    alphaB = np.array([2.05109221104216, 1.65393856475232, 1.65393856475232])
+
+    original_results = calculate_damped_electrostatics(
+        system_data["qcel_mol"], system_data["qA"], system_data["muA"],
+        system_data["qB"], system_data["muB"], alphaA, alphaB
+    )
+
+    vectorized_results = calculate_damped_electrostatics_vectorized(
+        system_data["qcel_mol"], system_data["qA"], system_data["muA"],
+        system_data["qB"], system_data["muB"], alphaA, alphaB
+    )
+
+    for i in range(len(original_results)):
+        assert np.isclose(original_results[i], vectorized_results[i], atol=1e-6)
