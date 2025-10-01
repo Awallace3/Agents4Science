@@ -29,6 +29,7 @@ dependencies:
   - qcfractalcompute>=0.59
   - qcmanybody
   - fastmcp
+  - pytest
   - pip:
       - qm-tools-aw==1.5.0
       - qcmlforge==0.0.11
