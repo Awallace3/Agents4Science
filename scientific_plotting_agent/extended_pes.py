@@ -198,40 +198,115 @@ def plot_pes(df: pd.DataFrame):
     plt.savefig("water_pes.png")
     plt.show()
 
-
-def main():
+def create_pes_gif(df: pd.DataFrame):
     """
-    Main function to run the analysis.
+    Create a GIF of the water PES to visualize the waters being pulled apart.
     """
-    df = pd.read_pickle("combined_df_4569.pkl")
-    df_subset = isolate_curve(df)
+    kcal_per_mol = qcel.constants.conversion_factor("hartree", "kcal / mol")
     
-    df_extended = displacement_geometry(df_subset, 0.1, 5.0, 0.1)
+    original_df = df.dropna(subset=["SAPT0 TOTAL ENERGY adz"])
+    new_df = df[df["SAPT0 TOTAL ENERGY adz"].isnull()]
 
-    sapt_results = []
-    for index, row in df_extended.iterrows():
-        if pd.isnull(row["SAPT0 TOTAL ENERGY adz"]):
-            results = run_psi4_sapt(row["qcel_molecule"])
-            sapt_results.append(results)
-        else:
-            sapt_results.append(
-                {
-                    "SAPT0 Total": row["SAPT0 TOTAL ENERGY adz"],
-                    "SAPT ELST": row["SAPT0 ELST ENERGY adz"],
-                    "SAPT EXCH": row["SAPT0 EXCH ENERGY adz"],
-                    "SAPT IND": row["SAPT0 IND ENERGY adz"],
-                    "SAPT DISP": row["SAPT0 DISP ENERGY adz"],
-                }
-            )
+    temp_dir = "gif_frames"
+    os.makedirs(temp_dir, exist_ok=True)
     
-    sapt_df = pd.DataFrame(sapt_results)
-    df_extended.reset_index(drop=True, inplace=True)
-    df_extended = pd.concat([df_extended, sapt_df], axis=1)
+    frames = []
+    for i, (index, row) in enumerate(new_df.iterrows()):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 7))
 
-    df_extended.to_pickle("extended_water_dimer.pkl")
+        # Plot PES
+        for df_plot, marker in [(original_df, "X"), (new_df, "o")]:
+            if not df_plot.empty:
+                distances = df_plot["min_contact_distance"]
+                ax1.plot(
+                    distances,
+                    df_plot["SAPT0 Total"] * kcal_per_mol,
+                    marker=marker,
+                    linestyle="-",
+                    label="Total",
+                    color="black",
+                )
+                ax1.plot(
+                    distances,
+                    df_plot["SAPT ELST"] * kcal_per_mol,
+                    marker=marker,
+                    linestyle="--",
+                    label="Elst",
+                    color="red",
+                )
+                ax1.plot(
+                    distances,
+                    df_plot["SAPT EXCH"] * kcal_per_mol,
+                    marker=marker,
+                    linestyle="--",
+                    label="Exch",
+                    color="green",
+                )
+                ax1.plot(
+                    distances,
+                    df_plot["SAPT IND"] * kcal_per_mol,
+                    marker=marker,
+                    linestyle="--",
+                    label="Ind",
+                    color="blue",
+                )
+                ax1.plot(
+                    distances,
+                    df_plot["SAPT DISP"] * kcal_per_mol,
+                    marker=marker,
+                    linestyle="--",
+                    label="Disp",
+                    color="orange",
+                )
+        
+        # Highlight current point
+        ax1.plot(
+            row["min_contact_distance"],
+            row["SAPT0 Total"] * kcal_per_mol,
+            "o",
+            color="purple",
+            markersize=10,
+            label="Current Point",
+        )
+
+        ax1.set_xlabel("Minimum Contact Distance (Å)")
+        ax1.set_ylabel("Energy (kcal/mol)")
+        ax1.set_title("SAPT0/aug-cc-pVDZ Potential Energy Surface")
+        handles, labels = ax1.get_legend_handles_labels()
+        by_label = dict(zip(labels, handles))
+        ax1.legend(by_label.values(), by_label.keys())
+        ax1.grid(True)
+
+        # Plot molecule
+        molecule = row["qcel_molecule"]
+        coords = molecule.geometry
+        symbols = molecule.symbols
+        
+        # Get atomic radii for plotting
+        atomic_radii = {
+            "H": 0.31,  # Covalent radius in Angstroms
+            "O": 0.66,  # Covalent radius in Angstroms
+        } # This is a simplification, real radii are more complex
+
+        for j, (symbol, coord) in enumerate(zip(symbols, coords)):
+            color = "blue" if j in molecule.fragments[0] else "red"
+            radius = atomic_radii.get(symbol, 0.5) # Default radius if not found
+            circle = plt.Circle(coord[:2], radius=radius, color=color, alpha=0.6)
+            ax2.add_patch(circle)
+            ax2.text(coord[0], coord[1], symbol, ha="center", va="center", fontsize=10)
+
+        ax2.set_aspect("equal", adjustable="box")
+        ax2.set_title(f"Min Contact Dist: {row['min_contact_distance']:.2f} Å")
+        ax2.axis("off")
+        
+        frame_path = os.path.join(temp_dir, f"frame_{i:03d}.png")
+        plt.savefig(frame_path)
+        plt.close(fig)
+        frames.append(imageio.v2.imread(frame_path))
+
+    imageio.mimsave("water_pes_animation.gif", frames, fps=5)
     
-    plot_pes(df_extended)
-
-
-if __name__ == "__main__":
-    main()
+    # Clean up temporary frames
+    for f in os.listdir(temp_dir):
+        os.remove(os.path.join(temp_dir, f))
+    os.rmdir(temp_dir)
