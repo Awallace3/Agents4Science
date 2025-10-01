@@ -36,13 +36,19 @@ adjusted between iloc[0] and iloc[1]. 2) computes a displacement vector for the
 shifted atoms. 3) use the displacement vector to create an arbitrary dimer
 potential energy surface with the minimum contact distance of starting_distance
 and increments of increment up to the minimum contact distance of
-ending_distance. The distance for geometry will be in bohr, so convert angstrom distances to bohr before adjusting the geometries. Extend the df_subset dataframe with these systems, setting all
+ending_distance. Compute the minimum contact distance for each geometry and keep these values for plotting. The distance for geometry will be in bohr, so convert angstrom distances to bohr before adjusting the geometries. Extend the df_subset dataframe with these systems, setting all
 other columns to have nan values. Then use psi4 to compute SAPT0/aug-cc-pVDZ
 energies for each system using qcel_molecule.to_string('psi4') over these new
 rows with nans in the SAPT0 adz columns. Save the updated df_subset to
-'extended_water_dimer.pkl'. Plot the SAPT0 PES over these points with total
+'extended_water_dimer.pkl'. 
+
+# Final Outputs
+Plot the SAPT0 PES over these points with total
 (black), elst (red), exch (green), ind (blue) and disp (orange). Have the original datapoints
-plotted with a X and the new datapoints with a O with all energies converted to kcalmol.
+plotted with a X and the new datapoints with a O with all energies converted to kcalmol. Save the plot to water_pes.png.
+
+Create a gif of the water PES to visualize the waters being pulled apart. Display the minimum contact distance while pulling these apart.
+
 
 # Code Snippet
 '''
@@ -58,7 +64,7 @@ def isolate_curve(df: pd.DataFrame, system_id_contains: str = "01_Water-Water"):
     df_subset = df[df["system_id"].str.contains(system_id_contains)].copy()
     print(df_subset)
 
-    def qcel_mols(row):
+    def qcel_mols(row) -> qcel.models.Molecule:
         """
         Convert the row to a qcel molecule
         """
