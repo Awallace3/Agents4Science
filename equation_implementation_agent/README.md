@@ -108,7 +108,5 @@ def elst_damping_mtp_mtp_f2(alpha_i, alpha_j, r):
         lam5 -= (1.0 + alpha_i * r + 0.5 * a1_2 * r2 + (1.0 / 6.0) * a1_3 * r3) * e1r
 
     return lam1, lam3, lam5
-
-
 """
 ```
