@@ -16,10 +16,19 @@ This agent interprets and plots from data in CSV or PKL files.
 
 First, read through `./GEMINI.md` to get a general understanding of the context
 we are providing to the model. Key aspects are defining the role, workflow,
-output format, and software stack (Dependencies). Then launch `gemini` in a terminal
-in this current directory with this `README.md` open as well. Copy and paste
-the prompts in the txt blocks below to work through this example the first time
-and then try to modify prompts and/or use different models with opencode.
+output format, and software stack (Dependencies). 
+
+## Starting the AI CLI
+
+In your bash terminal, navigate to this directory and launch the gemini CLI:
+```bash
+cd /path/to/scientific_plotting
+gemini
+```
+
+Keep this `README.md` open as well. Use the prompts in the blocks 
+below to work through this example the first time and then try to modify 
+prompts and/or use different models with opencode.
 
 
 ## Levels of SAPT II Violin Plot
@@ -33,22 +42,27 @@ not support this directly yet, so we are demonstrating it explicitly with a
 file here. When using agents, the AGENTS.md file might be used to provide
 general context of the project as determined by a slash command, `/init`, in
 either gemini or opencode. Because this is an empty project, we will skip the
-`/init` call. Go ahead and start with the following prompt:
-```txt
+`/init` call. 
+
+**AI CLI Prompt 1:** Go ahead and start with the following prompt in the gemini CLI:
+```
 Compare SAPT0 versus SAPT2+3(CCD)
 ```
 
 With this minimal prompt and context file, you should have created a violin
 plot; however, you might notice the numbers do not agree with the paper...
 
-```txt
+**AI CLI Prompt 2:** Enter this prompt in the gemini CLI:
+```
 The units of SAPT methods are in hartree and need to be converted to kcal/mol
 ```
 
 Now the violin plots should be comparable to Figure 1 of the Levels of SAPT II
 paper. Sometimes you might need to explicitly tell gemini to create violin plots
 and can be done with the prompt below (skip if it worked already):
-```txt
+
+**AI CLI Prompt 3 (optional):** If needed, enter this in the gemini CLI:
+```
 Make the violins of the error
 ```
 
@@ -59,10 +73,11 @@ datapoints? Let's select out a specific curve, determine the displacement
 vector to add data to this curve, and extend the results for SAPT0 adz. We will
 provide a code snippet to select a specific curve; however, you could iterate
 through processing the data without this call. We would still recommend
-converting data to a qcelemental.models.Molecule object to ensure a rudimentary
+converting data to a `qcelemental.models.Molecule` object to ensure a rudimentary
 validity check on the system before the quantum calculations.
 
-```txt
+**AI CLI Prompt 4:** Enter this comprehensive prompt in the gemini CLI:
+```
 # Task
 I want to select out a specific dissociation curve from the dataset through the python code snippet below in extended_pes.py. Using the df_subset, create a displacement_geometry function that 1) identifies which fragment is being adjusted between iloc[0] and iloc[1]. 2) computes a displacement vector for the shifted atoms. 3) use the displacement vector to create an arbitrary dimer potential energy surface with the minimum contact distance of starting_distance and increments of increment up to the minimum contact distance of ending_distance. Compute the minimum contact distance for each geometry and keep these values for plotting. The distance for geometry will be in bohr, so convert angstrom distances to bohr before adjusting the geometries. Extend the df_subset dataframe with these systems, setting all other columns to have nan values. Then use psi4 to compute SAPT0/aug-cc-pVDZ energies for each system using qcel_molecule.to_string('psi4') over these new rows with nans in the SAPT0 adz columns. Save the updated df_subset to 'extended_water_dimer.pkl'. 
 
@@ -106,17 +121,27 @@ def isolate_curve(df: pd.DataFrame, system_id_contains: str = "01_Water-Water"):
 ```
 
 This should take a water-water dimer curve from the dataset, compute SAPT0
-interaction energies energies, and plot the results. To restore state to the
-beginning, run `git restore .` to clear all outputs to begin again with different
-prompting and/or models! 
+interaction energies energies, and plot the results. 
+
+**Bash Command:** To restore state to the beginning, run this in your bash terminal:
+```bash
+git restore .
+```
+This clears all outputs so you can begin again with different prompting and/or models! 
 
 # Opencode
+
 Opencode works very similar to gemini; however, you will want to authenticate with
-GitHub Copilot before using it by running
-```sh
+GitHub Copilot before using it.
+
+## Setup
+
+**Bash Command:** Run this in your bash terminal to authenticate:
+```bash
 opencode auth login
 ```
-Then select GitHub Copilot
+
+Then select GitHub Copilot from the interactive menu that appears:
 ```txt
 ┌  Add credential
 │
@@ -135,10 +160,21 @@ Then select GitHub Copilot
 └
 ```
 
-Next launch `opencode` that should open a prompt very similar to gemini-cli.
-Select a model with a slash command (`/models`) and pressing tab or space to
-open a selection for models. I recommend selecting the `Claude Sonnet 4.5
-(Preview) GitHub Copilot` model to use one of the best models as of 2025-10-03.
-If you get an API error, you likely need to enable the model you selected from
-copilot under your GitHub Copilot Settings
+## Starting Opencode
+
+**Bash Command:** Launch the opencode CLI from your bash terminal:
+```bash
+opencode
+```
+
+This should open a prompt very similar to gemini-cli.
+
+**Slash Command in opencode CLI:** Select a model by typing this slash command:
+```
+/models
+```
+Press tab or space to open a selection of models. I recommend selecting the 
+`Claude Sonnet 4.5 (Preview) GitHub Copilot` model to use one of the best 
+models as of 2025-10-03. If you get an API error, you likely need to enable 
+the model you selected from copilot under your GitHub Copilot Settings
 [here](https://github.com/settings/copilot/features).

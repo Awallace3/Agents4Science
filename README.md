@@ -154,3 +154,8 @@ copilot under your GitHub Copilot Settings
 - Isabel (Izzy) Berry
 - Jaden Yon
 - Jacques Gay
+
+# Improvements?
+If you run into any issues or believe you have improvements for this demo,
+please feel free to open an issue on this GitHub repository or open a Pull
+Request!
