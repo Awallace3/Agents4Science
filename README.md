@@ -1,4 +1,4 @@
-# AI4Science Workshop: Opencode/Gemini-CLI
+# AI4Science Workshop: 1. Gemini-CLI/Opencode, 2. Fine-tuning/Reinforcement Learning
 
 ![header](extras/Header.png)
 
@@ -16,8 +16,6 @@ File Structure
 │   ├── GEMINI.md
 │   ├── README.md
 │   └── schriber_2021_184110.pdf
-├── extras
-│   └── Header.png
 ├── qm_mcp # launch vscode in this directory for part 3!
 │   ├── GEMINI.md
 │   └── README.md
