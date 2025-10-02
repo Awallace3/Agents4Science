@@ -46,13 +46,19 @@ This tutorial is designed to walk you through 3 separate examples:
 
 ## Installation
 
-Create a conda environment for python packages
-```py
+### Step 1: Create Conda Environment
+
+**Run in bash terminal:**
+```bash
 conda env create -f environment.yml
 conda activate p4_qcml
 ```
 
-To use either [gemini-cli](https://github.com/google-gemini/gemini-cli) or [opencode](https://opencode.ai/), you will need to install npm, which we encourage you to install using Node Version Manager [(nvm)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating). The following can be used to install nvm and then npm:
+### Step 2: Install Node.js and npm
+
+To use either [gemini-cli](https://github.com/google-gemini/gemini-cli) or [opencode](https://opencode.ai/), you will need to install npm. We encourage you to install using Node Version Manager [(nvm)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating).
+
+**Run in bash terminal:**
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 . ~/.bashrc
@@ -60,35 +66,41 @@ nvm install --lts
 nvm use --lts
 ```
 
-Then we can install gemini-cli through
+### Step 3: Install AI CLI Tool
+
+Choose either gemini-cli or opencode (or install both to try different models).
+
+**For gemini-cli, run in bash terminal:**
 ```bash
 npm install -g @google/gemini-cli
 ```
 
-Or opencode via
+**For opencode, run in bash terminal:**
 ```bash
 npm install -g opencode-ai
 ```
 
-
 Other installation details can be found at the official gemini-cli page [here](https://github.com/google-gemini/gemini-cli) or opencode page [here](https://opencode.ai/).
 
 ### Optional
-We recommend installing and using VSCode for these demos to facilitate the
-integration between a terminal (can open with ctrl+\` or cmd+\`). When
-launching gemini or opencode the first time, allow vscode to install the cli
-extension for integrated support to see file changes easier from the models.
+We recommend installing and using Visual Studio Code (vscode) for these demos
+to facilitate the integration between a terminal (can open with ctrl+\` or
+cmd+\`). When launching gemini or opencode the first time, allow vscode to
+install the cli extension for integrated support to see file changes easier
+from the models.
 
 ## Usage
 
-Each section can be done separately. The procedure will be to change
-directories into desired example, like `cd ./scientific_plotting` and follow
-the instructions in the `README.md`. Each txt block is meant to be a prompt
-that you will use with gemini or opencode models. Since gemini-cli has been
-tested the most in creating these tutorials, start with this model and run
-through it a first time, but afterwards, go back and try to use another model
-from opencode! Different models will give different results with some better
-than others. Also, change the prompts to see how that impacts the outcomes. 
+Each section can be done separately. The procedure is:
+1. Navigate to the desired example directory (e.g., `cd ./scientific_plotting`)
+2. Follow the instructions in that directory's `README.md`
+
+Throughout the examples, you'll see commands labeled as:
+- **Bash commands**: Run these directly in your bash terminal (e.g., `cd directory_name`, `git restore .`)
+- **AI CLI prompts**: Enter these as prompts inside the gemini or opencode CLI after launching it
+- **Slash commands**: Special commands within the AI CLI that start with `/` (e.g., `/models`, `/init`, `/chat`)
+
+Since gemini-cli has been tested the most in creating these tutorials, start with this model and run through it a first time. Afterwards, go back and try to use another model from opencode! Different models will give different results with some better than others. Also, change the prompts to see how that impacts the outcomes. Does the code output look the same? Did a model return results faster/slower? Do you feel like you had to guide a model more or less than another?
 
 ### 1. Scientific Plotting and Data Extension Example
 
@@ -115,12 +127,16 @@ Goes through creating and adding an MCP server to gemini-cli
 
 # Opencode Usage
 
-Opencode works very similar to gemini; however, you will want to authenticate with
-GitHub Copilot before using it by running
+## Authentication
+
+Before using opencode, authenticate with GitHub Copilot.
+
+**Run in bash terminal:**
 ```sh
 opencode auth login
 ```
-Then select GitHub Copilot
+
+Then select GitHub Copilot using the arrow keys and Enter:
 ```txt
 ┌  Add credential
 │
@@ -139,13 +155,25 @@ Then select GitHub Copilot
 └
 ```
 
-Next launch `opencode` that should open a prompt very similar to gemini-cli.
-Select a model with a slash command (`/models`) and pressing tab or space to
-open a selection for models. I recommend selecting the `Claude Sonnet 4.5
-(Preview) GitHub Copilot` model to use one of the best models as of 2025-10-03.
-If you get an API error, you likely need to enable the model you selected from
-copilot under your GitHub Copilot Settings
-[here](https://github.com/settings/copilot/features).
+## Launching Opencode
+
+**Run in bash terminal:**
+```bash
+opencode
+```
+
+## Selecting a Model
+
+Once opencode is running, select a model using a slash command.
+
+**Slash command in opencode CLI:**
+```
+/models
+```
+
+Press Tab or Space to open the model selection menu. We recommend selecting `Claude Sonnet 4.5 (Preview) GitHub Copilot` to use one of the best models as of 2025-10-03. 
+
+If you get an API error, you likely need to enable the model you selected from copilot under your GitHub Copilot Settings [here](https://github.com/settings/copilot/features).
 
 # Acknowledgements
 - Austin M. Wallace

@@ -1,4 +1,18 @@
-# Prompts
+# Equation Implementation Example
+
+This example demonstrates how to use AI CLI tools to read a scientific paper in PDF format and translate equations into Python code using an agentic test-driven development approach.
+
+## Prerequisites
+
+1. Navigate to this directory in your bash terminal
+2. Launch gemini or opencode (see main README.md for installation)
+3. Keep this README.md open alongside the terminal
+
+## Workflow
+
+### Step 1: Implement Electrostatics Equation
+
+**AI CLI Prompt 1 - Enter in gemini/opencode CLI:**
 ```txt
 # Task
 implement the electrostatics equation from @schriber_2021_184110.pdf. Implement the equation using numpy and qcelemental. Use a test driven development approach to implement the correct code to match an electrostatics energy for the given system below of -6.824148 kcal/mol. When implementing each term, explicitly write a comment that matches the latex format of the equation in the paper to help with organization/debugging. Note all usage of qA should be qA_electronic = qA - ZA and qB_electronic = qB - ZB.
@@ -50,9 +64,11 @@ ref_elst=-6.824148 kcal/mol # total electrostatics energy without damping functi
 """
 ```
 
-# Damping function implementation
-Now that we have a working electrostatics implementation, we will be able to direct the model to use the following damping functions to get the electrostatics energy closer to the one implemented in the paper.
+### Step 2: Add Damping Functions
 
+Now that we have a working electrostatics implementation, we will add damping functions to get the electrostatics energy closer to the one implemented in the paper.
+
+**AI CLI Prompt 2 - Enter in gemini/opencode CLI:**
 ```txt
 Here are damping functions with their partial derivatives for you to use. Copy the electrostatics equation and add another function for damped electrostatics. Use the alpha_A and alpha_B values for the damping parameters alpha_i and alpha_j in the pytest for water dimer. The numerical agreement for this test can be 1e-2.
 """
@@ -111,12 +127,36 @@ def elst_damping_mtp_mtp_f2(alpha_i, alpha_j, r):
 """
 ```
 
-# Optimize code
-Okay that implementation works but... you would never use that in production. Can we use LLMs to make our code faster? Can it quantify that improvement?
+### Step 3: Optimize the Code
+
+The implementation works, but let's use LLMs to make the code faster and more efficient.
+
+**AI CLI Prompt 3 - Enter in gemini/opencode CLI:**
 ```txt
-Now using the damped electrostatics test, optimize the numpy code to be vectorized and more efficient but still get the correct results. Write a pytest for this optimized version and write
-a script that analyzes the function calls between the two functions over an average of 10 runs with results on a bar plot.
+Now using the damped electrostatics test, optimize the numpy code to be vectorized and more efficient but still get the correct results. Write a pytest for this optimized version and write a script that analyzes the function calls between the two functions over an average of 10 runs with results on a bar plot.
 ```
 
-# Results
-This example shows how you could go from a simple equation from a paper (with reference values) to code through a test driven development approach. Now that you have reproduced results and optimized the code a little bit (much more would be needed in reality). Now try repeating this exercise with a different model through opencode, creating an adapted AGENTS.md file and other simplifications/improvements to the prompts above! With enough pointed direction, the models should give similar outputs; however, this is definitely not deterministic and results vary. Important metrics to think about are cost/speed/adherence to instructions/code performance metrics/accuracy/etc...
+## Results and Next Steps
+
+This example shows how you can go from a simple equation in a paper (with reference values) to code through a test-driven development approach. You've now reproduced results and somewhat optimized the code (more adjustments are likely needed for production usage).
+
+Now try repeating this exercise with:
+- A different model through opencode
+- Creating an adapted AGENTS.md file
+- Simplifying/improving the prompts above
+
+With enough pointed direction, different models should give similar outputs; however, this is definitely not deterministic and results vary. Important metrics to consider are:
+- Cost
+- Speed
+- Adherence to instructions
+- Code performance metrics
+- Accuracy
+
+### Reset to Beginning
+
+**Run in bash terminal:**
+```bash
+git restore .
+```
+
+This clears all outputs so you can experiment with different approaches!
