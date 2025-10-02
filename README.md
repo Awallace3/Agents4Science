@@ -8,6 +8,28 @@ for the google colab notebooks and the details for Tutorial 1 with three
 separate applications are included below. Note, Tutorial 1 is designed to work
 with `gemini-cli` or `opencode` tool (see installation details below).
 
+File Structure
+
+```txt
+├── environment.yml # for conda environment
+├── equation_implementation # launch vscode in this directory for part 2!
+│   ├── GEMINI.md
+│   ├── README.md
+│   └── schriber_2021_184110.pdf
+├── extras
+│   └── Header.png
+├── qm_mcp # launch vscode in this directory for part 3!
+│   ├── GEMINI.md
+│   └── README.md
+├── README.md
+└── scientific_plotting # launch vscode in this directory for part 1!
+    ├── combined_df_4569.pkl
+    ├── GEMINI.md
+    ├── los-ii.pdf
+    ├── psi4_output.dat
+    └── README.md
+```
+
 ## General Links
 
 - Workshop [website](https://sites.gatech.edu/ai4science-tutorial/)
@@ -16,6 +38,12 @@ with `gemini-cli` or `opencode` tool (see installation details below).
     - notebook links (day of workshop)
 
 # Tutorial 1
+
+This tutorial is designed to walk you through 3 separate examples:
+1. SI data analysis, plotting, and extensions, [Part 1](#1. Scientific Plotting and Data Extension Example)
+2. Test driven development to implement and optimize an equation from literature, [Part 2](### 2. Equation Implementation Example)
+3. Creating and connecting an MCP server, [Part 3](### 3. Creating an MCP Server)
+
 ## Installation
 
 Create a conda environment for python packages
@@ -52,7 +80,17 @@ launching gemini or opencode the first time, allow vscode to install the cli
 extension for integrated support to see file changes easier from the models.
 
 ## Usage
-## 1. Scientific Plotting and Data Extension Example
+
+Each section can be done separately. The procedure will be to change
+directories into desired example, like `cd ./scientific_plotting` and follow
+the instructions in the `README.md`. Each txt block is meant to be a prompt
+that you will use with gemini or opencode models. Since gemini-cli has been
+tested the most in creating these tutorials, start with this model and run
+through it a first time, but afterwards, go back and try to use another model
+from opencode! Different models will give different results with some better
+than others. Also, change the prompts to see how that impacts the outcomes. 
+
+### 1. Scientific Plotting and Data Extension Example
 
 Plotting figures is an essential task for scientists, so this example shows how
 you can use agentic command line tools to interpret data and plot data to
