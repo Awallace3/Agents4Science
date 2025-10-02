@@ -22,6 +22,11 @@ Or opencode via
 npm install -g opencode-ai
 ```
 
+Create conda environment
+```py
+conda env create -f environment.yml
+```
+
 Other installation details can be found at the official gemini-cli page [here](https://github.com/google-gemini/gemini-cli) or opencode page [here](https://opencode.ai/).
 
 # Usage
