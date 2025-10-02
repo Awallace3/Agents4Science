@@ -113,3 +113,44 @@ into Python code using an agentic test-driven development approach
 
 Goes through creating and adding an MCP server to gemini-cli
 
+# Opencode Usage
+
+Opencode works very similar to gemini; however, you will want to authenticate with
+GitHub Copilot before using it by running
+```sh
+opencode auth login
+```
+Then select GitHub Copilot
+```txt
+┌  Add credential
+│
+◆  Select provider
+
+│  Search:
+│  ○ opencode zen
+│  ○ Anthropic
+│  ● GitHub Copilot
+│  ○ OpenAI
+│  ○ Google
+│  ○ OpenRouter
+│  ○ Vercel AI Gateway
+│  ...
+│  ↑/↓ to select • Enter: confirm • Type: to search
+└
+```
+
+Next launch `opencode` that should open a prompt very similar to gemini-cli.
+Select a model with a slash command (`/models`) and pressing tab or space to
+open a selection for models. I recommend selecting the `Claude Sonnet 4.5
+(Preview) GitHub Copilot` model to use one of the best models as of 2025-10-03.
+If you get an API error, you likely need to enable the model you selected from
+copilot under your GitHub Copilot Settings
+[here](https://github.com/settings/copilot/features).
+
+# Acknowledgements
+- Austin M. Wallace
+- Piyush Jha
+- Prithwish Jana
+- Isabel (Izzy) Berry
+- Jaden Yon
+- Jacques Gay
