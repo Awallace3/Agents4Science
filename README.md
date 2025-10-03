@@ -44,6 +44,14 @@ This tutorial is designed to walk you through 3 separate examples:
 
 ## Installation
 
+### Step 0: Clone this Repository
+
+**Run in bash terminal:**
+```bash
+git clone https://github.com/Awallace3/Agents4Science.git
+cd Agents4Science
+```
+
 ### Step 1: Create Conda Environment
 
 **Run in bash terminal:**
