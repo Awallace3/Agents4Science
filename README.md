@@ -33,7 +33,8 @@ File Structure
 - Workshop [website](https://sites.gatech.edu/ai4science-tutorial/)
 - Tutorial 1 Slides (after workshop)
 - Tutorial 2 Slides (after workshop): 
-    - notebook links (day of workshop)
+    - [Part 1 Colab Notebook](https://colab.research.google.com/drive/1Saf8rtZEeKI1wXtRn6r9wTRoSrvzODPe?usp=sharing)
+    - [Part 2 Colab Notebook](https://drive.google.com/file/d/1RrutyFcLbutD5FNpTXB68FuETKLOjYQt/view)
 
 # Tutorial 1
 
