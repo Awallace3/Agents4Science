@@ -31,7 +31,7 @@ File Structure
 ## General Links
 
 - Workshop [website](https://sites.gatech.edu/ai4science-tutorial/)
-- Tutorial 1 Slides (after workshop)
+- Tutorial 1 [Slides](https://docs.google.com/presentation/d/1kTebZcbvt92OxnYd3taEzTkHjYpJIFr4CdXywwn5QHE/edit?usp=sharing)
 - Tutorial 2 Slides (after workshop): 
     - [Part 1 Colab Notebook](https://colab.research.google.com/drive/1Saf8rtZEeKI1wXtRn6r9wTRoSrvzODPe?usp=sharing)
     - [Part 2 Colab Notebook](https://drive.google.com/file/d/1RrutyFcLbutD5FNpTXB68FuETKLOjYQt/view)
